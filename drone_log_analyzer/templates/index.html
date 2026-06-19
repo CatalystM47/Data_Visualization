@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>드론 비행 로그 분석기</title>
+    <script src="{{ url_for('static', filename='js/plotly.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>🛸 드론 비행 로그 분석기</h1>
+        <p class="subtitle">PID 튜닝 · 안정성 분석 · 파라미터 최적화</p>
+    </header>
+
+    <main>
+        <!-- Upload Section -->
+        <section id="upload-section" class="card">
+            <div id="drop-zone" class="drop-zone">
+                <div class="drop-zone-content">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    <h3>비행 로그 파일을 드래그하거나 클릭하여 업로드</h3>
+                    <p class="supported-formats">
+                        지원 형식: .ulg / .ulog (PX4) · .bbl / .bfl / .csv (Betaflight/iNav) · .bin / .log (ArduPilot)
+                    </p>
+                    <input type="file" id="file-input" accept=".ulg,.ulog,.bbl,.bfl,.csv,.bin,.log,.txt" hidden>
+                </div>
+            </div>
+            <div id="upload-progress" class="progress-bar" style="display:none">
+                <div class="progress-fill"></div>
+                <span class="progress-text">업로드 중...</span>
+            </div>
+        </section>
+
+        <!-- Summary Section -->
+        <section id="summary-section" class="card" style="display:none">
+            <h2>비행 요약</h2>
+            <div class="summary-grid" id="summary-grid"></div>
+            <button id="analyze-btn" class="btn-primary">분석 시작</button>
+            <div id="analyze-progress" style="display:none">
+                <div class="spinner"></div>
+                <span>분석 중... 잠시 기다려 주세요</span>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section id="results-section" style="display:none">
+            <!-- Tabs -->
+            <div class="tab-container">
+                <button class="tab active" data-tab="overview">종합 점수</button>
+                <button class="tab" data-tab="pid">PID 분석</button>
+                <button class="tab" data-tab="stability">안정성</button>
+                <button class="tab" data-tab="vibration">진동 분석</button>
+                <button class="tab" data-tab="charts">상세 그래프</button>
+                <button class="tab" data-tab="recommendations">권장 조치</button>
+            </div>
+
+            <!-- Overview Tab -->
+            <div id="tab-overview" class="tab-content active">
+                <div class="scores-grid" id="scores-grid"></div>
+            </div>
+
+            <!-- PID Tab -->
+            <div id="tab-pid" class="tab-content">
+                <div class="axis-selector">
+                    <button class="axis-btn active" data-axis="roll">Roll</button>
+                    <button class="axis-btn" data-axis="pitch">Pitch</button>
+                    <button class="axis-btn" data-axis="yaw">Yaw</button>
+                </div>
+                <div id="pid-details"></div>
+                <div id="pid-charts"></div>
+            </div>
+
+            <!-- Stability Tab -->
+            <div id="tab-stability" class="tab-content">
+                <div id="stability-details"></div>
+                <div id="stability-charts"></div>
+            </div>
+
+            <!-- Vibration Tab -->
+            <div id="tab-vibration" class="tab-content">
+                <div id="vibration-details"></div>
+                <div id="vibration-charts"></div>
+            </div>
+
+            <!-- Charts Tab -->
+            <div id="tab-charts" class="tab-content">
+                <div id="all-charts"></div>
+            </div>
+
+            <!-- Recommendations Tab -->
+            <div id="tab-recommendations" class="tab-content">
+                <div id="recommendations-list"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>드론 비행 로그 분석기 v1.0 — 오프라인 분석 도구</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
